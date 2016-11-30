@@ -15,12 +15,14 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class GameView extends View {
+public class GameView extends View implements Runnable {
 
     Bitmap[] bmp;
 
     int lx = 11;
     int ly = 10;
+    boolean run=false;
+
 
     int width;
     int height;
@@ -48,27 +50,33 @@ public class GameView extends View {
             6,6,6,6,6,6,6,6,6,6,
             0,0,0,0,0,0,0,0,0,0
     };
+    Thread t=new Thread(this);
 
 
 
     public GameView(Context context) {
         super(context);
         init(context);
+        t.start();
     }
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
+        t.start();
+
     }
 
     public GameView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
+        t.start();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public GameView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+
     }
 
     void init(Context context) {
@@ -225,14 +233,10 @@ public class GameView extends View {
         selRect.right = (heroX+2)*52;
         selRect.bottom = (heroY+2)*52;
 
-        invalidate();
+       // invalidate();
         return true;
 
     }
-
-
-
-
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
@@ -244,12 +248,13 @@ public class GameView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-
+        run=true;
         for (int i = 0; i < lx; i++) {
             for (int j = 0; j < ly; j++) {
                 canvas.drawBitmap(bmp[level[i*10 + j]], null,
                         new Rect(j*width, i*height,(j+1)*width, (i+1)*height), null);
             }
+            invalidate();
         }
 
 
@@ -265,6 +270,11 @@ public class GameView extends View {
     }
 
 
+    @Override
+    public void run() {
+        while(run) {
 
-
+            Log.d("moje", "runin: ");
+        }
+    }
 }
